@@ -1,8 +1,13 @@
 package bip39
 
 import (
+	"crypto/sha256"
 	"io"
+	"math/big"
+	"strings"
 )
+
+var wordIndexBitMask = new(big.Int).SetInt64(1<<WordIndexBitSize - 1)
 
 type Mnemonic = string
 
@@ -20,8 +25,32 @@ func GenerateMnemonic(rand io.Reader, n EntropyLen) (Mnemonic, error) {
 }
 
 func NewMnemonic(entropy []byte) (Mnemonic, error) {
+	n := len(entropy)
+	if !EntropyLenCompatible(n) {
+		return "", ErrEntropyLen
+	}
 
-	return "", nil
+	// make up the full entropy as a big int
+	checksumB, checksumLen := sha256.Sum256(entropy)[0], n/32
+	entropy = append(entropy, checksumB)
+
+	x := new(big.Int).SetBytes(entropy)
+	x.Rsh(x, uint(8-checksumLen))
+
+	// MS=(ENT+CS)/11=(ENT+ENT/32)/11=3*ENT/32
+	nWord := 3 * n / 32
+	//indices := make([]int64, sentenceLen)
+	words := make([]string, nWord)
+
+	wordIndex := new(big.Int)
+	for i := nWord - 1; i >= 0; i-- {
+		wordIndex.And(x, wordIndexBitMask)
+		x.Rsh(x, WordIndexBitSize)
+
+		words[i] = wordList[wordIndex.Int64()]
+	}
+
+	return strings.Join(words, " "), nil
 }
 
 func ValidateMnemonic(mnemonic Mnemonic) bool {

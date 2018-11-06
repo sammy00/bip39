@@ -1,6 +1,6 @@
 package bip39
 
-type EntropyLen int
+type EntropyLen = int
 
 const (
 	Size128 = EntropyLen(16 + 4*iota)
@@ -9,3 +9,5 @@ const (
 	Size224
 	Size256
 )
+
+const WordIndexBitSize = 11
