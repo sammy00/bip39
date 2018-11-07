@@ -6,7 +6,7 @@ import (
 )
 
 func EntropyLenCompatible(n EntropyLen) bool {
-	return 0 == n%32 && n >= Size128 && n <= Size256
+	return 0 == n%4 && n >= Size128 && n <= Size256
 }
 
 func EntropyToFullBigInt(entropy []byte) (*big.Int, int, error) {
