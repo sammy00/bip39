@@ -40,9 +40,14 @@ func init() {
 
 func main() {
 	locales := []string{
-		//"chinese_simplified",
-		//"chinese_traditional",
+		"chinese_simplified",
+		"chinese_traditional",
 		"english",
+		"french",
+		"italian",
+		"japanese",
+		"korean",
+		"spanish",
 	}
 
 	for _, locale := range locales {
@@ -72,6 +77,6 @@ func ToCamelCase(s string) string {
 	str := strings.Title(strings.Replace(s, "_", " ", -1))
 	str = strings.Replace(str, " ", "", -1)
 
-	//return strings.ToLower(str[:1]) + str[1:]
-	return str
+	return strings.ToLower(str[:1]) + str[1:]
+	//return str
 }

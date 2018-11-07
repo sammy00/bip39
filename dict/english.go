@@ -9,7 +9,7 @@ import (
 )
 
 // wordlist for locale as named
-var English []string
+var english []string
 
 func init() {
 	golden := `abandon
@@ -2067,5 +2067,5 @@ zoo
 		panic(errors.Errorf("invalid crc32: got %x, expect %x", got, expectCRC32))
 	}
 
-	English = strings.Split(strings.TrimSpace(golden), "\n")
+	english = strings.Split(strings.TrimSpace(golden), "\n")
 }
