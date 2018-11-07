@@ -29,3 +29,27 @@ func TestGenerateSeed(t *testing.T) {
 		})
 	}
 }
+
+func TestGenerateSeed_jp(t *testing.T) {
+	var testCases []*bip39.GoldieJP
+	bip39.ReadGoldenJSON(t, bip39.GoldenJP, &testCases)
+
+	//const passphrase = "TREZOR"
+
+	testCases = testCases[:1]
+	for _, c := range testCases {
+		c := c
+
+		t.Run("", func(st *testing.T) {
+			got, err := bip39.GenerateSeed(c.Mnemonic, c.Passphrase)
+
+			if nil != err {
+				st.Fatal(err)
+			}
+
+			if !bytes.Equal(got, c.Seed) {
+				st.Fatalf("invalid seed: got %x, expect %x", got, c.Seed)
+			}
+		})
+	}
+}
