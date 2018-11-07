@@ -7,17 +7,14 @@ import (
 	"github.com/sammy00/bip39"
 )
 
-func TestGenerateSeed(t *testing.T) {
-	var testCases []*bip39.Goldie
-	bip39.ReadGoldenJSON(t, bip39.GoldenTrezor, &testCases)
-
-	const passphrase = "TREZOR"
+func TestGenerateSeed_en(t *testing.T) {
+	testCases := bip39.ReadTrezorGoldenJSON(t)
 
 	for _, c := range testCases {
 		c := c
 
 		t.Run("", func(st *testing.T) {
-			got, err := bip39.GenerateSeed(c.Mnemonic, passphrase)
+			got, err := bip39.GenerateSeed(c.Mnemonic, c.Passphrase)
 
 			if nil != err {
 				st.Fatal(err)

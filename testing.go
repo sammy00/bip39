@@ -9,7 +9,7 @@ import (
 )
 
 const GoldenBase = "testdata"
-const GoldenTrezor = "trezor.golden"
+const GoldenTrezor = "trezor.json"
 const GoldenJP = "test_JP_BIP39.json"
 
 type Goldie struct {
@@ -25,6 +25,8 @@ type GoldieJP struct {
 	Seed               []byte
 	ExtendedPrivateKey string
 }
+
+type GoldieTrezor GoldieJP
 
 func (goldie *GoldieJP) UnmarshalJSON(data []byte) error {
 	var jp map[string]string
@@ -51,6 +53,29 @@ func (goldie *GoldieJP) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (goldie *GoldieTrezor) UnmarshalJSON(data []byte) error {
+	var trezor []string
+	if err := json.Unmarshal(data, &trezor); nil != err {
+		return err
+	}
+
+	var err error
+	if goldie.Entropy, err = hex.DecodeString(trezor[0]); nil != err {
+		return err
+	}
+
+	goldie.Mnemonic = trezor[1]
+	goldie.Passphrase = "TREZOR"
+
+	if goldie.Seed, err = hex.DecodeString(trezor[2]); nil != err {
+		return err
+	}
+
+	goldie.ExtendedPrivateKey = trezor[3]
+
+	return nil
+}
+
 func ReadGoldenJSON(t *testing.T, name string, v interface{}) {
 	fd, err := os.Open(filepath.Join(GoldenBase, name))
 	if nil != err {
@@ -63,25 +88,9 @@ func ReadGoldenJSON(t *testing.T, name string, v interface{}) {
 	}
 }
 
-/*
-func ReadTrezorGoldenJSON(t *testing.T) []*Goldie {
-	fd, err := os.Open(filepath.Join(GoldenBase, name))
-	if nil != err {
-		t.Fatal(err)
-	}
-	defer fd.Close()
-}
-*/
+func ReadTrezorGoldenJSON(t *testing.T) []*GoldieTrezor {
+	trezor := make(map[string][]*GoldieTrezor)
+	ReadGoldenJSON(t, GoldenTrezor, &trezor)
 
-func WriteGoldenJSON(name string, v interface{}) error {
-	fd, err := os.OpenFile(filepath.Join(GoldenBase, name),
-		os.O_CREATE|os.O_WRONLY, 0600)
-	if nil != err {
-		return err
-	}
-	defer fd.Close()
-
-	encoder := json.NewEncoder(fd)
-	encoder.SetIndent("", "  ")
-	return encoder.Encode(v)
+	return trezor["english"]
 }

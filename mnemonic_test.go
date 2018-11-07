@@ -7,8 +7,7 @@ import (
 )
 
 func TestNewMnemonic_OK(t *testing.T) {
-	var testCases []*bip39.Goldie
-	bip39.ReadGoldenJSON(t, bip39.GoldenTrezor, &testCases)
+	testCases := bip39.ReadTrezorGoldenJSON(t)
 
 	for _, c := range testCases {
 		c := c
