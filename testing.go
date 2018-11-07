@@ -28,6 +28,16 @@ func ReadGoldenJSON(t *testing.T, name string, v interface{}) {
 	}
 }
 
+/*
+func ReadTrezorGoldenJSON(t *testing.T) []*Goldie {
+	fd, err := os.Open(filepath.Join(GoldenBase, name))
+	if nil != err {
+		t.Fatal(err)
+	}
+	defer fd.Close()
+}
+*/
+
 func WriteGoldenJSON(name string, v interface{}) error {
 	fd, err := os.OpenFile(filepath.Join(GoldenBase, name),
 		os.O_CREATE|os.O_WRONLY, 0600)
