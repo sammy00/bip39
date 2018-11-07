@@ -13,7 +13,8 @@ var wordIndexBitMask = new(big.Int).SetInt64(1<<WordIndexBitSize - 1)
 
 type Mnemonic = string
 
-func GenerateMnemonic(rand io.Reader, n EntropyLen) (Mnemonic, error) {
+func GenerateMnemonic(rand io.Reader, n EntropyLen,
+	lang ...dict.Language) (Mnemonic, error) {
 	if !EntropyLenCompatible(n) {
 		return "", ErrEntropyLen
 	}
@@ -23,13 +24,23 @@ func GenerateMnemonic(rand io.Reader, n EntropyLen) (Mnemonic, error) {
 		return "", err
 	}
 
-	return NewMnemonic(entropy)
+	return NewMnemonic(entropy, lang...)
 }
 
-func NewMnemonic(entropy []byte) (Mnemonic, error) {
+func NewMnemonic(entropy []byte, lang ...dict.Language) (Mnemonic, error) {
 	n := len(entropy)
 	if !EntropyLenCompatible(n) {
 		return "", ErrEntropyLen
+	}
+
+	var wordlist []string
+	if 0 == len(lang) {
+		wordlist = dict.WordListInUse()
+	} else {
+		var err error
+		if wordlist, err = dict.Wordlist(lang[0]); nil != err {
+			return "", err
+		}
 	}
 
 	// make up the full entropy as a big int
@@ -44,16 +55,14 @@ func NewMnemonic(entropy []byte) (Mnemonic, error) {
 	// if measured in bytes, we got
 	//   MS=(3*ENT/8)/(32/8)=3*(ENT/8)/4
 	nWord := 3 * n / 4
-	//indices := make([]int64, sentenceLen)
 	words := make([]string, nWord)
 
-	wordList, wordIndex := dict.WordListInUse(), new(big.Int)
-	//fmt.Println(wordList)
+	wordIndex := new(big.Int)
 	for i := nWord - 1; i >= 0; i-- {
 		wordIndex.And(x, wordIndexBitMask)
 		x.Rsh(x, WordIndexBitSize)
 
-		words[i] = wordList[wordIndex.Int64()]
+		words[i] = wordlist[wordIndex.Int64()]
 	}
 
 	return strings.Join(words, " "), nil
