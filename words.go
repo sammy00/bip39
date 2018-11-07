@@ -1,5 +1,6 @@
 package bip39
 
+/*
 import "github.com/sammy00/bip39/dict"
 
 type Locale int
@@ -15,3 +16,4 @@ func WordList4Locale(locale Locale) []string { return nil }
 func init() {
 	wordList = dict.English
 }
+*/

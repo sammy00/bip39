@@ -23,35 +23,34 @@ import (
 	"github.com/pkg/errors"
 )
 
-// wordlist for locale as named
-var %s []string
-
-func init() {
-	golden := ` + "`%s`" + `
+// %s return the wordlist for the given language specified as the 
+// function name
+func %s() []string {
+	const golden = ` + "`%s`" + `
 
 	const expectCRC32 = %d
 	if got := crc32.ChecksumIEEE([]byte(golden)); got != expectCRC32 {
 		panic(errors.Errorf("invalid crc32: got %%x, expect %%x", got, expectCRC32))
 	}
 
-	%s = strings.Split(strings.TrimSpace(golden), "\n")
+	return strings.Split(strings.TrimSpace(golden), "\n")
 }
 `
 
 func main() {
-	locales := []string{
-		"chinese_simplified",
-		"chinese_traditional",
+	dictNames := []string{
+		//"chinese_simpilified",
+		//"chinese_traditional",
 		"english",
-		"french",
-		"italian",
-		"japanese",
-		"korean",
-		"spanish",
+		//"french",
+		//"italian",
+		//"japanese",
+		//"korean",
+		//"spanish",
 	}
 
-	for _, locale := range locales {
-		writeLocale(locale)
+	for _, dictName := range dictNames {
+		writeLocale(dictName)
 	}
 }
 
@@ -70,7 +69,7 @@ func writeLocale(locale string) {
 	}
 	defer fd.Close()
 
-	fmt.Fprintf(fd, tmpl, wordlistName, data, checksum, wordlistName)
+	fmt.Fprintf(fd, tmpl, wordlistName, wordlistName, data, checksum)
 }
 
 func ToCamelCase(s string) string {

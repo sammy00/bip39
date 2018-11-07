@@ -8,10 +8,9 @@ import (
 	"github.com/pkg/errors"
 )
 
-// wordlist for locale as named
-var english []string
-
-func init() {
+// english return the wordlist for the given language specified as the 
+// function name
+func english() []string {
 	golden := `abandon
 ability
 able
@@ -2067,5 +2066,5 @@ zoo
 		panic(errors.Errorf("invalid crc32: got %x, expect %x", got, expectCRC32))
 	}
 
-	english = strings.Split(strings.TrimSpace(golden), "\n")
+	return strings.Split(strings.TrimSpace(golden), "\n")
 }

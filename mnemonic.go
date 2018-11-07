@@ -5,6 +5,8 @@ import (
 	"io"
 	"math/big"
 	"strings"
+
+	"github.com/sammy00/bip39/dict"
 )
 
 var wordIndexBitMask = new(big.Int).SetInt64(1<<WordIndexBitSize - 1)
@@ -45,7 +47,8 @@ func NewMnemonic(entropy []byte) (Mnemonic, error) {
 	//indices := make([]int64, sentenceLen)
 	words := make([]string, nWord)
 
-	wordIndex := new(big.Int)
+	wordList, wordIndex := dict.WordListInUse(), new(big.Int)
+	//fmt.Println(wordList)
 	for i := nWord - 1; i >= 0; i-- {
 		wordIndex.And(x, wordIndexBitMask)
 		x.Rsh(x, WordIndexBitSize)
