@@ -44,7 +44,7 @@ func main() {
 		"english",
 		//"french",
 		//"italian",
-		//"japanese",
+		"japanese",
 		//"korean",
 		//"spanish",
 	}

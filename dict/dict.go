@@ -62,7 +62,8 @@ func init() {
 	//	English: english(),
 	//}
 	wordlistGenerators = map[Language]WordlistGenerator{
-		English: english,
+		English:  english,
+		Japanese: japanese,
 	}
 
 	//lang, wordlist = English, wordlists[English]

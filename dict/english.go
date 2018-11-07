@@ -11,7 +11,7 @@ import (
 // english return the wordlist for the given language specified as the 
 // function name
 func english() []string {
-	golden := `abandon
+	const golden = `abandon
 ability
 able
 about
