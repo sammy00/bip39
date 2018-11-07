@@ -12,18 +12,6 @@ var (
 	wordlist []string
 )
 
-func init() {
-	//wordlists = map[Language][]string{
-	//	English: english(),
-	//}
-	wordlistGenerators = map[Language]WordlistGenerator{
-		English: english,
-	}
-
-	//lang, wordlist = English, wordlists[English]
-	lang, wordlist = English, wordlistGenerators[English]()
-}
-
 func LanguageInUse() Language {
 	return lang
 }
@@ -56,6 +44,27 @@ func UseLanguage(lang Language) error {
 	return nil
 }
 
+func Wordlist(lang Language) ([]string, error) {
+	generator, ok := wordlistGenerators[lang]
+	if !ok {
+		return nil, errors.New("non-registered language")
+	}
+
+	return generator(), nil
+}
+
 func WordListInUse() []string {
 	return wordlist
+}
+
+func init() {
+	//wordlists = map[Language][]string{
+	//	English: english(),
+	//}
+	wordlistGenerators = map[Language]WordlistGenerator{
+		English: english,
+	}
+
+	//lang, wordlist = English, wordlists[English]
+	lang, wordlist = English, wordlistGenerators[English]()
 }
