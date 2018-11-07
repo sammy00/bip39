@@ -14,6 +14,9 @@ const (
 	Spanish
 )
 
+var languageDescriptions = map[Language]string{}
+
+/*
 var languageDescriptions = map[Language]string{
 	Reserved:           "Reserved",
 	ChineseSimpilified: "ChineseSimpilified",
@@ -25,6 +28,7 @@ var languageDescriptions = map[Language]string{
 	Korean:             "Korean",
 	Spanish:            "Spanish",
 }
+*/
 
 func (lang Language) String() string {
 	return languageDescriptions[lang]
