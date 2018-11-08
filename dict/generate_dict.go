@@ -18,6 +18,7 @@ package dict
 
 import (
 	"hash/crc32"
+	"sort"
 	"strings"
 
 	"github.com/pkg/errors"
@@ -33,7 +34,17 @@ func %s() []string {
 		panic(errors.Errorf("invalid crc32: got %%x, expect %%x", got, expectCRC32))
 	}
 
-	return strings.Split(strings.TrimSpace(golden), "\n")
+	wordlist := strings.Split(strings.TrimSpace(golden), "\n")
+	// sort in ascending order to speed up lookup 
+	sort.Strings(wordlist)
+
+	return wordlist
+}
+
+func init() {
+	if !sort.StringsAreSorted(%s()) {
+		panic("messy wordlist")
+	}
 }
 `
 
@@ -69,7 +80,10 @@ func writeLocale(locale string) {
 	}
 	defer fd.Close()
 
-	fmt.Fprintf(fd, tmpl, wordlistName, wordlistName, data, checksum)
+	//fmt.Fprintf(fd, tmpl, wordlistName, wordlistName, data, checksum)
+	// add on order checking
+	fmt.Fprintf(fd, tmpl, wordlistName, wordlistName, data, checksum,
+		wordlistName)
 }
 
 func ToCamelCase(s string) string {

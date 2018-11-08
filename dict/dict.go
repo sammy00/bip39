@@ -1,6 +1,9 @@
 package dict
 
-import "errors"
+import (
+	"errors"
+	"sort"
+)
 
 type WordlistGenerator func() []string
 
@@ -14,6 +17,37 @@ var (
 
 func LanguageInUse() Language {
 	return lang
+}
+
+func LanguageToUse(lang ...Language) (Language, error) {
+	if 0 == len(lang) {
+		return LanguageInUse(), nil
+	}
+
+	if _, ok := wordlistGenerators[lang[0]]; !ok {
+		return Reserved, errors.New("non-registered language")
+	}
+
+	return lang[0], nil
+}
+
+func LookUpMissing(lang Language, words ...string) int {
+
+	wordlist, err := WordlistToUse(lang)
+	if nil != err {
+		return 0
+	}
+
+	wordlistLen := len(wordlist)
+	for i, word := range words {
+
+		j := sort.SearchStrings(wordlist, word)
+		if j == wordlistLen || wordlist[j] != word {
+			return i
+		}
+	}
+
+	return -1
 }
 
 func Register(lang Language, generator WordlistGenerator,
@@ -55,6 +89,14 @@ func Wordlist(lang Language) ([]string, error) {
 
 func WordListInUse() []string {
 	return wordlist
+}
+
+func WordlistToUse(lang ...Language) ([]string, error) {
+	if len(lang) > 0 {
+		return Wordlist(lang[0])
+	}
+
+	return WordListInUse(), nil
 }
 
 func init() {
