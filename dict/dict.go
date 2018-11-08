@@ -51,21 +51,6 @@ func LanguageToUse(lang ...Language) (Language, error) {
 	return lang[0], nil
 }
 
-func LookUp(word string, lang ...Language) (int, bool) {
-	language, err := LanguageToUse(lang...)
-	if nil != err {
-		return -1, false
-	}
-
-	trie, ok := tries[language]
-	if !ok {
-		return -1, false
-	}
-
-	w, ok := trie.Find(word)
-	return w.Meta().(int), ok
-}
-
 func Register(lang Language, generator WordlistGenerator,
 	description string) error {
 	if _, ok := wordlistGenerators[lang]; ok {
@@ -75,6 +60,23 @@ func Register(lang Language, generator WordlistGenerator,
 	wordlistGenerators[lang], languageDescriptions[lang] = generator, description
 
 	return nil
+}
+
+func TrieToUse(lang ...Language) (*trie.Trie, Language, error) {
+	if len(lang) > 0 {
+		usable, ok := tries[lang[0]]
+		if !ok {
+			return nil, Reserved, errors.New("trie disabled")
+		}
+
+		return usable, lang[0], nil
+	}
+
+	if _, ok := tries[language]; !ok {
+		return nil, Reserved, errors.New("trie disabled for language in use")
+	}
+
+	return tries[language], language, nil
 }
 
 func UseLanguage(lang Language) error {

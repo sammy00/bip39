@@ -20,7 +20,7 @@ func EntropyLenCompatible(n EntropyLen) bool {
 func RecoverFullEntropy(mnemonic Mnemonic, lang ...dict.Language) (
 	[]byte, error) {
 	// vanity check against language
-	language, err := dict.LanguageToUse(lang...)
+	trie, _, err := dict.TrieToUse(lang...)
 	if nil != err {
 		return nil, err
 	}
@@ -40,7 +40,8 @@ func RecoverFullEntropy(mnemonic Mnemonic, lang ...dict.Language) (
 	// recover the full entropy and delegates further
 	x, y := new(big.Int), new(big.Int)
 	for _, word := range words {
-		idx, ok := dict.LookUp(word, language)
+		//idx, ok := dict.LookUp(word, language)
+		idx, ok := dict.LookUp(trie, word)
 		if !ok {
 			return nil, errors.New("missing word")
 		}
