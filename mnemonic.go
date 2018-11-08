@@ -2,7 +2,6 @@ package bip39
 
 import (
 	"crypto/sha256"
-	"fmt"
 	"io"
 	"math/big"
 	"strings"
@@ -67,19 +66,7 @@ func NewMnemonic(entropy []byte, lang ...dict.Language) (Mnemonic, error) {
 		words[i] = wordlist[wordIndex.Int64()]
 	}
 
-	//return strings.Join(words, " "), nil
-
-	//native := strings.Join(words, " ")
-	//return string(norm.NFKD.Bytes([]byte(native))), nil
-
-	//return norm.NFKD.String(strings.Join(words, " ")), nil
-	//whiteSpace := norm.NFKD.String("\u3000")
-	whiteSpace := "\u3000"
-	fmt.Printf("*%s*\n", whiteSpace)
-	fmt.Println("*\u3000*")
-	fmt.Println("* *")
-	return norm.NFKD.String(strings.Join(words, whiteSpace)), nil
-	//return strings.Join(words, whiteSpace), nil
+	return norm.NFKD.String(strings.Join(words, " ")), nil
 }
 
 func ValidateMnemonic(mnemonic Mnemonic) bool {

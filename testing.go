@@ -6,6 +6,8 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+
+	"golang.org/x/text/unicode/norm"
 )
 
 //go:generate curl -s  https://raw.githubusercontent.com/trezor/python-mnemonic/master/vectors.json -o testdata/trezor.json
@@ -45,7 +47,8 @@ func (goldie *GoldieJP) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
-	goldie.Mnemonic = jp["mnemonic"]
+	//goldie.Mnemonic = jp["mnemonic"]
+	goldie.Mnemonic = norm.NFKD.String(jp["mnemonic"]) // NFKD normalization
 	goldie.Passphrase = jp["passphrase"]
 
 	if goldie.Seed, err = hex.DecodeString(jp["seed"]); nil != err {
