@@ -39,18 +39,6 @@ func Disable(lang Language) {
 	delete(tries, lang)
 }
 
-func LanguageToUse(lang ...Language) (Language, error) {
-	if 0 == len(lang) {
-		return language, nil
-	}
-
-	if _, ok := wordlistGenerators[lang[0]]; !ok {
-		return Reserved, errors.New("non-registered language")
-	}
-
-	return lang[0], nil
-}
-
 func Register(lang Language, generator WordlistGenerator,
 	description string) error {
 	if _, ok := wordlistGenerators[lang]; ok {
@@ -90,15 +78,6 @@ func UseLanguage(lang Language) error {
 	Enable(language)
 
 	return nil
-}
-
-func Wordlist(lang Language) ([]string, error) {
-	generator, ok := wordlistGenerators[lang]
-	if !ok {
-		return nil, errors.New("non-registered language")
-	}
-
-	return generator(), nil
 }
 
 func WordlistInUse() ([]string, Language) {
