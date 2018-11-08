@@ -8,7 +8,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-// english return the wordlist for the given language specified as the
+// english return the wordlist for the given language specified as the 
 // function name
 func english() []string {
 	const golden = `abandon
@@ -2069,20 +2069,10 @@ zoo
 	return strings.Split(strings.TrimSpace(golden), "\n")
 
 	// wordlist := strings.Split(strings.TrimSpace(golden), "\n")
-	// sort in ascending order to speed up lookup
+	// sort in ascending order to speed up lookup 
 	// sort.Strings(wordlist)
 
 	// return wordlist
-
-	/*
-		wordlist := strings.Split(strings.TrimSpace(golden), "\n")
-		trie := trie.New()
-		for i, word := range wordlist {
-			trie.Add(word, i)
-		}
-
-		return wordlist, trie
-	*/
 }
 
 //func init() {

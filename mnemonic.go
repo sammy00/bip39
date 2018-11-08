@@ -33,17 +33,23 @@ func NewMnemonic(entropy []byte, lang ...dict.Language) (Mnemonic, error) {
 		return "", ErrEntropyLen
 	}
 
-	var wordlist []string
-	var language dict.Language
-	if 0 == len(lang) {
-		wordlist = dict.WordListInUse()
-		language = dict.LanguageInUse()
-	} else {
-		var err error
-		if wordlist, err = dict.Wordlist(lang[0]); nil != err {
-			return "", err
+	/*
+		var wordlist []string
+		var language dict.Language
+		if 0 == len(lang) {
+			wordlist = dict.WordListInUse()
+			language = dict.LanguageInUse()
+		} else {
+			var err error
+			if wordlist, err = dict.Wordlist(lang[0]); nil != err {
+				return "", err
+			}
+			language = lang[0]
 		}
-		language = lang[0]
+	*/
+	wordlist, language, err := dict.WordlistToUse(lang...)
+	if nil != err {
+		return "", err
 	}
 
 	// make up the full entropy as a big int

@@ -39,34 +39,25 @@ func Disable(lang Language) {
 	delete(tries, lang)
 }
 
+/*
 func LanguageInUse() Language {
 	return lang
 }
+*/
 
-func LanguageToUse(lang ...Language) (Language, error) {
-	if 0 == len(lang) {
-		return LanguageInUse(), nil
+func LanguageToUse(language ...Language) (Language, error) {
+	if 0 == len(language) {
+		return lang, nil
 	}
 
-	if _, ok := wordlistGenerators[lang[0]]; !ok {
+	if _, ok := wordlistGenerators[language[0]]; !ok {
 		return Reserved, errors.New("non-registered language")
 	}
 
-	return lang[0], nil
+	return language[0], nil
 }
 
 func LookUp(word string, lang ...Language) (int, bool) {
-	/*
-		wordlist, err := WordlistToUse(lang...)
-		if nil != err {
-			return -1, false
-		}
-
-		j := sort.SearchStrings(wordlist, word)
-
-		return j, (j != len(wordlist)) && (wordlist[j] == word)
-	*/
-
 	language, err := LanguageToUse(lang...)
 	if nil != err {
 		return -1, false
@@ -110,27 +101,29 @@ func Wordlist(lang Language) ([]string, error) {
 	return generator(), nil
 }
 
-func WordListInUse() []string {
-	return wordlist
+//func WordListInUse() []string {
+func WordlistInUse() ([]string, Language) {
+	return wordlist, lang
 }
 
-func WordlistToUse(lang ...Language) ([]string, error) {
-	if len(lang) > 0 {
-		return Wordlist(lang[0])
+func WordlistToUse(lang ...Language) ([]string, Language, error) {
+	if 0 == len(lang) {
+		wordlist, language := WordlistInUse()
+		return wordlist, language, nil
+		//return Wordlist(lang[0])
 	}
 
-	return WordListInUse(), nil
+	//return WordListInUse(), nil
+
+	generator, ok := wordlistGenerators[lang[0]]
+	if !ok {
+		return nil, Reserved, errors.New("non-registered language")
+	}
+
+	return generator(), lang[0], nil
 }
 
 func init() {
-	//wordlists = map[Language][]string{
-	//	English: english(),
-	//}
-	/*
-		wordlistGenerators = map[Language]WordlistGenerator{
-			English:  english,
-			Japanese: japanese,
-		}*/
 	wordlistGenerators = make(map[Language]WordlistGenerator)
 	tries = make(map[Language]*trie.Trie)
 
@@ -140,6 +133,5 @@ func init() {
 	Enable(English)
 	Enable(Japanese)
 
-	//lang, wordlist = English, wordlists[English]
 	lang, wordlist = English, wordlistGenerators[English]()
 }

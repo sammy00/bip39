@@ -75,6 +75,7 @@ func writeLocale(locale string) {
 
 	checksum, wordlistName := crc32.ChecksumIEEE(data), ToCamelCase(locale)
 
+	os.Remove(locale + ".go")
 	fd, err := os.OpenFile(locale+".go", os.O_CREATE|os.O_WRONLY, 0644)
 	if nil != err {
 		panic(err)
