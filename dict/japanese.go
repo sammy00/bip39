@@ -3,7 +3,6 @@ package dict
 
 import (
 	"hash/crc32"
-	"sort"
 	"strings"
 
 	"github.com/pkg/errors"
@@ -2067,15 +2066,17 @@ func japanese() []string {
 		panic(errors.Errorf("invalid crc32: got %x, expect %x", got, expectCRC32))
 	}
 
-	wordlist := strings.Split(strings.TrimSpace(golden), "\n")
+	return strings.Split(strings.TrimSpace(golden), "\n")
+
+	// wordlist := strings.Split(strings.TrimSpace(golden), "\n")
 	// sort in ascending order to speed up lookup 
-	sort.Strings(wordlist)
+	// sort.Strings(wordlist)
 
-	return wordlist
+	// return wordlist
 }
 
-func init() {
-	if !sort.StringsAreSorted(japanese()) {
-		panic("messy wordlist")
-	}
-}
+//func init() {
+//	if !sort.StringsAreSorted(japanese()) {
+//		panic("messy wordlist")
+//	}
+//}

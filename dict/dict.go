@@ -63,14 +63,6 @@ func LookUpMissing(lang Language, words ...string) int {
 
 func Register(lang Language, generator WordlistGenerator,
 	description string) error {
-	/*
-		if _, ok := wordlists[lang]; ok {
-			return errors.New("language already registered")
-		}
-
-		wordlists[lang], languageDescriptions[lang] = wordlist, description
-		return nil
-	*/
 	if _, ok := wordlistGenerators[lang]; ok {
 		return errors.New("language already registered")
 	}

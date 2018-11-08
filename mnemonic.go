@@ -72,6 +72,7 @@ func NewMnemonic(entropy []byte, lang ...dict.Language) (Mnemonic, error) {
 	return norm.NFKD.String(strings.Join(words, " ")), nil
 }
 
-func ValidateMnemonic(mnemonic Mnemonic) bool {
-	return false
+func ValidateMnemonic(mnemonic Mnemonic, lang ...dict.Language) bool {
+	_, err := RecoverFullEntropy(mnemonic, lang...)
+	return nil == err
 }
