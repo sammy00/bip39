@@ -5,8 +5,10 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
+	"github.com/sammy00/bip39/dict"
 	"golang.org/x/text/unicode/norm"
 )
 
@@ -48,7 +50,10 @@ func (goldie *GoldieJP) UnmarshalJSON(data []byte) error {
 	}
 
 	//goldie.Mnemonic = jp["mnemonic"]
-	goldie.Mnemonic = norm.NFKD.String(jp["mnemonic"]) // NFKD normalization
+	//goldie.Mnemonic = norm.NFKD.String(jp["mnemonic"]) // NFKD normalization
+	words := strings.Fields(norm.NFKD.String(jp["mnemonic"]))
+	goldie.Mnemonic = strings.Join(words, dict.IdeographicSpaces)
+
 	goldie.Passphrase = jp["passphrase"]
 
 	if goldie.Seed, err = hex.DecodeString(jp["seed"]); nil != err {

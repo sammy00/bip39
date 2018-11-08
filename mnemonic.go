@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"github.com/sammy00/bip39/dict"
-	"golang.org/x/text/unicode/norm"
 )
 
 var wordIndexBitMask = new(big.Int).SetInt64(1<<WordIndexBitSize - 1)
@@ -35,13 +34,16 @@ func NewMnemonic(entropy []byte, lang ...dict.Language) (Mnemonic, error) {
 	}
 
 	var wordlist []string
+	var language dict.Language
 	if 0 == len(lang) {
 		wordlist = dict.WordListInUse()
+		language = dict.LanguageInUse()
 	} else {
 		var err error
 		if wordlist, err = dict.Wordlist(lang[0]); nil != err {
 			return "", err
 		}
+		language = lang[0]
 	}
 
 	// make up the full entropy as a big int
@@ -69,7 +71,9 @@ func NewMnemonic(entropy []byte, lang ...dict.Language) (Mnemonic, error) {
 		words[i] = wordlist[wordIndex.Int64()]
 	}
 
-	return norm.NFKD.String(strings.Join(words, " ")), nil
+	//return norm.NFKD.String(strings.Join(words, " ")), nil
+	//return strings.Join(words, " "), nil
+	return strings.Join(words, dict.Whitespace(language)), nil
 }
 
 func ValidateMnemonic(mnemonic Mnemonic, lang ...dict.Language) bool {

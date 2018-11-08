@@ -42,10 +42,8 @@ func TestNewMnemonic_OK_jp(t *testing.T) {
 			if nil != err {
 				st.Fatalf("unexpected error: %v", err)
 			}
-
+			st.Log(c.Mnemonic)
 			if got != c.Mnemonic {
-				st.Log(got)
-				st.Log(c.Mnemonic)
 				st.Fatalf("invalid mnemonic: got %s, expect %s", got, c.Mnemonic)
 			}
 		})
