@@ -46,12 +46,9 @@ func TestValidateMnemonic_en_OK(t *testing.T) {
 	testCases := bip39.ReadTrezorGoldenJSON(t)
 
 	for i, c := range testCases {
-
-		//t.Run("", func(st *testing.T) {
 		if !bip39.ValidateMnemonic(c.Mnemonic) {
 			t.Fatalf("#%d mnemonic should be valid", i)
 		}
-		//})
 	}
 }
 

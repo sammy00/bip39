@@ -26,7 +26,8 @@ func RecoverFullEntropy(mnemonic Mnemonic, lang ...dict.Language) (
 	}
 
 	// split mnemonic into words
-	words := strings.Split(norm.NFKD.String(mnemonic), " ")
+	words := strings.Fields(norm.NFKD.String(mnemonic))
+
 	// calculate the expected entropy length and checksum length
 	// 	ENT/8=MS*4/3, CS=(ENT/8)/4
 	nWord := len(words)

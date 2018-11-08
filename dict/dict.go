@@ -13,7 +13,7 @@ var (
 	wordlistGenerators map[Language]WordlistGenerator
 	tries              map[Language]*trie.Trie
 
-	lang     Language
+	language Language
 	wordlist []string
 )
 
@@ -39,16 +39,16 @@ func Disable(lang Language) {
 	delete(tries, lang)
 }
 
-func LanguageToUse(language ...Language) (Language, error) {
-	if 0 == len(language) {
-		return lang, nil
+func LanguageToUse(lang ...Language) (Language, error) {
+	if 0 == len(lang) {
+		return language, nil
 	}
 
-	if _, ok := wordlistGenerators[language[0]]; !ok {
+	if _, ok := wordlistGenerators[lang[0]]; !ok {
 		return Reserved, errors.New("non-registered language")
 	}
 
-	return language[0], nil
+	return lang[0], nil
 }
 
 func LookUp(word string, lang ...Language) (int, bool) {
@@ -78,10 +78,14 @@ func Register(lang Language, generator WordlistGenerator,
 }
 
 func UseLanguage(lang Language) error {
-	//if _, ok := wordlists[lang]; !ok {
 	if _, ok := wordlistGenerators[lang]; !ok {
 		return errors.New("non-registered language")
 	}
+
+	//Disable(language)
+
+	language = lang
+	Enable(language)
 
 	return nil
 }
@@ -95,16 +99,14 @@ func Wordlist(lang Language) ([]string, error) {
 	return generator(), nil
 }
 
-//func WordListInUse() []string {
 func WordlistInUse() ([]string, Language) {
-	return wordlist, lang
+	return wordlist, language
 }
 
 func WordlistToUse(lang ...Language) ([]string, Language, error) {
 	if 0 == len(lang) {
 		wordlist, language := WordlistInUse()
 		return wordlist, language, nil
-		//return Wordlist(lang[0])
 	}
 
 	//return WordListInUse(), nil
@@ -127,5 +129,5 @@ func init() {
 	Enable(English)
 	Enable(Japanese)
 
-	lang, wordlist = English, wordlistGenerators[English]()
+	language, wordlist = English, wordlistGenerators[English]()
 }
