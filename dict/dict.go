@@ -31,6 +31,17 @@ func LanguageToUse(lang ...Language) (Language, error) {
 	return lang[0], nil
 }
 
+func LookUp(word string, lang ...Language) (int, bool) {
+	wordlist, err := WordlistToUse(lang...)
+	if nil != err {
+		return -1, false
+	}
+
+	j := sort.SearchStrings(wordlist, word)
+
+	return j, (j != len(wordlist)) && (wordlist[j] == word)
+}
+
 func LookUpMissing(lang Language, words ...string) int {
 
 	wordlist, err := WordlistToUse(lang)

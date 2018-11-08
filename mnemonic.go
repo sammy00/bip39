@@ -51,6 +51,9 @@ func NewMnemonic(entropy []byte, lang ...dict.Language) (Mnemonic, error) {
 
 	x := new(big.Int).SetBytes(entropy)
 	x.Rsh(x, uint(8-checksumLen))
+	//fmt.Printf("checksum=%x\n", checksumB&(1<<uint(checksumLen)-1))
+	//fmt.Printf("checksum=%x\n", checksumB>>uint(8-checksumLen))
+	//fmt.Printf("entropy'=%x\n", x.Bytes())
 
 	// MS=(ENT+CS)/11=(ENT+ENT/32)/11=3*ENT/32
 	// if measured in bytes, we got
