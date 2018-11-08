@@ -2,7 +2,8 @@ package dict
 
 import (
 	"errors"
-	"sort"
+
+	"github.com/derekparker/trie"
 )
 
 type WordlistGenerator func() []string
@@ -10,10 +11,33 @@ type WordlistGenerator func() []string
 var (
 	//wordlists map[Language][]string
 	wordlistGenerators map[Language]WordlistGenerator
+	tries              map[Language]*trie.Trie
 
 	lang     Language
 	wordlist []string
 )
+
+func Enable(lang Language) error {
+	generator, ok := wordlistGenerators[lang]
+	if !ok {
+		return errors.New("language not registered")
+	}
+
+	if _, ok := tries[lang]; ok {
+		return nil
+	}
+
+	tries[lang] = trie.New()
+	for i, word := range generator() {
+		tries[lang].Add(word, i)
+	}
+
+	return nil
+}
+
+func Disable(lang Language) {
+	delete(tries, lang)
+}
 
 func LanguageInUse() Language {
 	return lang
@@ -32,33 +56,29 @@ func LanguageToUse(lang ...Language) (Language, error) {
 }
 
 func LookUp(word string, lang ...Language) (int, bool) {
-	wordlist, err := WordlistToUse(lang...)
+	/*
+		wordlist, err := WordlistToUse(lang...)
+		if nil != err {
+			return -1, false
+		}
+
+		j := sort.SearchStrings(wordlist, word)
+
+		return j, (j != len(wordlist)) && (wordlist[j] == word)
+	*/
+
+	language, err := LanguageToUse(lang...)
 	if nil != err {
 		return -1, false
 	}
 
-	j := sort.SearchStrings(wordlist, word)
-
-	return j, (j != len(wordlist)) && (wordlist[j] == word)
-}
-
-func LookUpMissing(lang Language, words ...string) int {
-
-	wordlist, err := WordlistToUse(lang)
-	if nil != err {
-		return 0
+	trie, ok := tries[language]
+	if !ok {
+		return -1, false
 	}
 
-	wordlistLen := len(wordlist)
-	for i, word := range words {
-
-		j := sort.SearchStrings(wordlist, word)
-		if j == wordlistLen || wordlist[j] != word {
-			return i
-		}
-	}
-
-	return -1
+	w, ok := trie.Find(word)
+	return w.Meta().(int), ok
 }
 
 func Register(lang Language, generator WordlistGenerator,
@@ -106,10 +126,19 @@ func init() {
 	//wordlists = map[Language][]string{
 	//	English: english(),
 	//}
-	wordlistGenerators = map[Language]WordlistGenerator{
-		English:  english,
-		Japanese: japanese,
-	}
+	/*
+		wordlistGenerators = map[Language]WordlistGenerator{
+			English:  english,
+			Japanese: japanese,
+		}*/
+	wordlistGenerators = make(map[Language]WordlistGenerator)
+	tries = make(map[Language]*trie.Trie)
+
+	Register(English, english, languageDescriptions[English])
+	Register(Japanese, japanese, languageDescriptions[Japanese])
+
+	Enable(English)
+	Enable(Japanese)
 
 	//lang, wordlist = English, wordlists[English]
 	lang, wordlist = English, wordlistGenerators[English]()
