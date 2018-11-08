@@ -10,20 +10,16 @@ import (
 func TestGenerateSeed_en(t *testing.T) {
 	testCases := bip39.ReadTrezorGoldenJSON(t)
 
-	for _, c := range testCases {
-		c := c
+	for i, c := range testCases {
+		got, err := bip39.GenerateSeed(c.Mnemonic, c.Passphrase)
 
-		t.Run("", func(st *testing.T) {
-			got, err := bip39.GenerateSeed(c.Mnemonic, c.Passphrase)
+		if nil != err {
+			t.Fatalf("#%d unexpected: %v", i, err)
+		}
 
-			if nil != err {
-				st.Fatal(err)
-			}
-
-			if !bytes.Equal(got, c.Seed) {
-				st.Fatalf("invalid seed: got %x, expect %x", got, c.Seed)
-			}
-		})
+		if !bytes.Equal(got, c.Seed) {
+			t.Fatalf("#%d invalid seed: got %x, expect %x", i, got, c.Seed)
+		}
 	}
 }
 
@@ -31,22 +27,15 @@ func TestGenerateSeed_jp(t *testing.T) {
 	var testCases []*bip39.GoldieJP
 	bip39.ReadGoldenJSON(t, bip39.GoldenJP, &testCases)
 
-	//const passphrase = "TREZOR"
+	for i, c := range testCases {
 
-	testCases = testCases[:1]
-	for _, c := range testCases {
-		c := c
+		got, err := bip39.GenerateSeed(c.Mnemonic, c.Passphrase)
+		if nil != err {
+			t.Fatalf("#%d unexpected: %v", i, err)
+		}
 
-		t.Run("", func(st *testing.T) {
-			got, err := bip39.GenerateSeed(c.Mnemonic, c.Passphrase)
-
-			if nil != err {
-				st.Fatal(err)
-			}
-
-			if !bytes.Equal(got, c.Seed) {
-				st.Fatalf("invalid seed: got %x, expect %x", got, c.Seed)
-			}
-		})
+		if !bytes.Equal(got, c.Seed) {
+			t.Fatalf("#%d invalid seed: got %x, expect %x", i, got, c.Seed)
+		}
 	}
 }

@@ -10,20 +10,16 @@ import (
 func TestNewMnemonic_OK_en(t *testing.T) {
 	testCases := bip39.ReadTrezorGoldenJSON(t)
 
-	for _, c := range testCases {
-		c := c
+	for i, c := range testCases {
+		got, err := bip39.NewMnemonic(c.Entropy)
 
-		t.Run("", func(st *testing.T) {
-			got, err := bip39.NewMnemonic(c.Entropy)
+		if nil != err {
+			t.Fatalf("#%d unexpected error: %v", i, err)
+		}
 
-			if nil != err {
-				st.Fatalf("unexpected error: %v", err)
-			}
-
-			if got != c.Mnemonic {
-				st.Fatalf("invalid mnemonic: got %s, expect %s", got, c.Mnemonic)
-			}
-		})
+		if got != c.Mnemonic {
+			t.Fatalf("#%d invalid mnemonic: got %s, expect %s", i, got, c.Mnemonic)
+		}
 	}
 }
 
@@ -33,34 +29,29 @@ func TestNewMnemonic_OK_jp(t *testing.T) {
 	var testCases []*bip39.GoldieJP
 	bip39.ReadGoldenJSON(t, bip39.GoldenJP, &testCases)
 
-	for _, c := range testCases {
-		c := c
+	for i, c := range testCases {
+		got, err := bip39.NewMnemonic(c.Entropy, lang)
 
-		t.Run("", func(st *testing.T) {
-			got, err := bip39.NewMnemonic(c.Entropy, lang)
+		if nil != err {
+			t.Fatalf("#%d unexpected error: %v", i, err)
+		}
 
-			if nil != err {
-				st.Fatalf("unexpected error: %v", err)
-			}
-
-			if got != c.Mnemonic {
-				st.Fatalf("invalid mnemonic: got %s, expect %s", got, c.Mnemonic)
-			}
-		})
+		if got != c.Mnemonic {
+			t.Fatalf("#%d invalid mnemonic: got %s, expect %s", i, got, c.Mnemonic)
+		}
 	}
 }
 
 func TestValidateMnemonic_en_OK(t *testing.T) {
 	testCases := bip39.ReadTrezorGoldenJSON(t)
 
-	for _, c := range testCases {
-		c := c
+	for i, c := range testCases {
 
-		t.Run("", func(st *testing.T) {
-			if !bip39.ValidateMnemonic(c.Mnemonic) {
-				st.Fatal("mnemonic should be valid")
-			}
-		})
+		//t.Run("", func(st *testing.T) {
+		if !bip39.ValidateMnemonic(c.Mnemonic) {
+			t.Fatalf("#%d mnemonic should be valid", i)
+		}
+		//})
 	}
 }
 
@@ -70,13 +61,9 @@ func TestValidateMnemonic_jp_OK(t *testing.T) {
 	var testCases []*bip39.GoldieJP
 	bip39.ReadGoldenJSON(t, bip39.GoldenJP, &testCases)
 
-	for _, c := range testCases {
-		c := c
-
-		t.Run("", func(st *testing.T) {
-			if !bip39.ValidateMnemonic(c.Mnemonic, lang) {
-				st.Fatal("mnemonic should be valid")
-			}
-		})
+	for i, c := range testCases {
+		if !bip39.ValidateMnemonic(c.Mnemonic, lang) {
+			t.Fatalf("#%d mnemonic should be valid", i)
+		}
 	}
 }

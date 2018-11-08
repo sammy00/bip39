@@ -39,12 +39,6 @@ func Disable(lang Language) {
 	delete(tries, lang)
 }
 
-/*
-func LanguageInUse() Language {
-	return lang
-}
-*/
-
 func LanguageToUse(language ...Language) (Language, error) {
 	if 0 == len(language) {
 		return lang, nil
