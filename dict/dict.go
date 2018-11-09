@@ -1,8 +1,6 @@
 package dict
 
 import (
-	"errors"
-
 	"github.com/derekparker/trie"
 )
 
@@ -20,7 +18,7 @@ var (
 func Enable(lang Language) error {
 	generator, ok := wordlistGenerators[lang]
 	if !ok {
-		return errors.New("language not registered")
+		return ErrUnknownLanguage
 	}
 
 	if _, ok := tries[lang]; ok {
@@ -42,7 +40,7 @@ func Disable(lang Language) {
 func Register(lang Language, generator WordlistGenerator,
 	description string) error {
 	if _, ok := wordlistGenerators[lang]; ok {
-		return errors.New("language already registered")
+		return ErrOccupiedLanguage
 	}
 
 	wordlistGenerators[lang], languageDescriptions[lang] = generator, description
@@ -51,28 +49,23 @@ func Register(lang Language, generator WordlistGenerator,
 }
 
 func TrieToUse(lang ...Language) (*trie.Trie, Language, error) {
+	l := language // default as the language in use
 	if len(lang) > 0 {
-		usable, ok := tries[lang[0]]
-		if !ok {
-			return nil, Reserved, errors.New("trie disabled")
-		}
-
-		return usable, lang[0], nil
+		l = lang[0]
 	}
 
-	if _, ok := tries[language]; !ok {
-		return nil, Reserved, errors.New("trie disabled for language in use")
+	if _, ok := tries[l]; !ok {
+		return nil, l, ErrDisabledTrie
 	}
 
-	return tries[language], language, nil
+	return tries[l], l, nil
 }
 
 func UseLanguage(lang Language) error {
 	if _, ok := wordlistGenerators[lang]; !ok {
-		return errors.New("non-registered language")
+		//return errors.New("non-registered language")
+		return ErrUnknownLanguage
 	}
-
-	//Disable(language)
 
 	language = lang
 	Enable(language)
@@ -94,7 +87,7 @@ func WordlistToUse(lang ...Language) ([]string, Language, error) {
 
 	generator, ok := wordlistGenerators[lang[0]]
 	if !ok {
-		return nil, Reserved, errors.New("non-registered language")
+		return nil, lang[0], ErrUnknownLanguage
 	}
 
 	return generator(), lang[0], nil
