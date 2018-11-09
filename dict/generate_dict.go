@@ -50,6 +50,8 @@ func %s() []string {
 `
 
 func main() {
+	const GoldenDictBase = "golden"
+
 	dictNames := []string{
 		//"chinese_simpilified",
 		//"chinese_traditional",
