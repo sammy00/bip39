@@ -1,0 +1,11 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/golang:1.11.1
+    steps:
+      - checkout 
+      - run: go mod vendor 
+      - run: go test -v -race $(go list ./... | grep -v /vendor/) -coverprofile=coverage.txt
+      - run: bash <(curl -s https://codecov.io/bash) -t 
+      e66e4f0a-f41e-4d54-b1b3-6f3e7bd696c3
