@@ -2,7 +2,6 @@ package bip39
 
 import (
 	"crypto/sha256"
-	"errors"
 	"math/big"
 	"strings"
 
@@ -34,7 +33,7 @@ func RecoverFullEntropy(mnemonic Mnemonic, lang ...dict.Language) (
 	n := nWord * 4 / 3
 	// check compatibility of entropy length
 	if nWord%3 != 0 || !EntropyLenCompatible(n) {
-		return nil, errors.New("invalid mnemonic length")
+		return nil, ErrMnemonicLen
 	}
 
 	// recover the full entropy and delegates further
@@ -43,7 +42,7 @@ func RecoverFullEntropy(mnemonic Mnemonic, lang ...dict.Language) (
 		//idx, ok := dict.LookUp(word, language)
 		idx, ok := dict.LookUp(trie, word)
 		if !ok {
-			return nil, errors.New("missing word")
+			return nil, ErrInvalidWord
 		}
 
 		y.SetInt64(int64(idx))
