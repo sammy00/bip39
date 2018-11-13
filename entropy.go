@@ -10,13 +10,15 @@ import (
 	"github.com/sammy00/bip39/dict"
 )
 
+// EntropyLenCompatible checks if the provided entropy length is supported,
+// which should be Size128, Size160, Size192, Size224 or Size256 currently
 func EntropyLenCompatible(n EntropyLen) bool {
 	return 0 == n%4 && n >= Size128 && n <= Size256
 }
 
 // RecoverFullEntropy recovers the entropy plus the checksum from
 // the given mnemonic
-func RecoverFullEntropy(mnemonic Mnemonic, lang ...dict.Language) (
+func RecoverFullEntropy(mnemonic string, lang ...dict.Language) (
 	[]byte, error) {
 	// vanity check against language
 	trie, _, err := dict.TrieToUse(lang...)
@@ -39,7 +41,6 @@ func RecoverFullEntropy(mnemonic Mnemonic, lang ...dict.Language) (
 	// recover the full entropy and delegates further
 	x, y := new(big.Int), new(big.Int)
 	for _, word := range words {
-		//idx, ok := dict.LookUp(word, language)
 		idx, ok := dict.LookUp(trie, word)
 		if !ok {
 			return nil, ErrInvalidWord
@@ -58,6 +59,9 @@ func RecoverFullEntropy(mnemonic Mnemonic, lang ...dict.Language) (
 	return entropy, nil
 }
 
+// DecodeFullEntropy decodes the full entropy into the raw entropy
+// and the corresponding checksum, where the n/4 least significant bits
+// if the effective checksum.
 func DecodeFullEntropy(data []byte) ([]byte, byte, error) {
 	n := len(data) - 1
 	if !EntropyLenCompatible(n) {

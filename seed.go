@@ -7,7 +7,7 @@ import (
 	"golang.org/x/text/unicode/norm"
 )
 
-func GenerateSeed(mnemonic Mnemonic, passphrase ...string) ([]byte, error) {
+func GenerateSeed(mnemonic string, passphrase ...string) ([]byte, error) {
 	saltS := "mnemonic"
 	if 0 != len(passphrase) {
 		saltS += passphrase[0]

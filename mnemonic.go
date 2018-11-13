@@ -9,12 +9,12 @@ import (
 	"github.com/sammy00/bip39/dict"
 )
 
+// wordIndexBitMask is the bits masker assisting in decoding word indices
+// out of the full entropy
 var wordIndexBitMask = new(big.Int).SetInt64(1<<WordIndexBitSize - 1)
 
-type Mnemonic = string
-
 func GenerateMnemonic(rand io.Reader, n EntropyLen,
-	lang ...dict.Language) (Mnemonic, error) {
+	lang ...dict.Language) (string, error) {
 	if !EntropyLenCompatible(n) {
 		return "", ErrEntropyLen
 	}
@@ -27,7 +27,7 @@ func GenerateMnemonic(rand io.Reader, n EntropyLen,
 	return NewMnemonic(entropy, lang...)
 }
 
-func NewMnemonic(entropy []byte, lang ...dict.Language) (Mnemonic, error) {
+func NewMnemonic(entropy []byte, lang ...dict.Language) (string, error) {
 	n := len(entropy)
 	if !EntropyLenCompatible(n) {
 		return "", ErrEntropyLen
@@ -68,7 +68,7 @@ func NewMnemonic(entropy []byte, lang ...dict.Language) (Mnemonic, error) {
 	return strings.Join(words, dict.Whitespace(language)), nil
 }
 
-func ValidateMnemonic(mnemonic Mnemonic, lang ...dict.Language) bool {
+func ValidateMnemonic(mnemonic string, lang ...dict.Language) bool {
 	_, err := RecoverFullEntropy(mnemonic, lang...)
 	return nil == err
 }
