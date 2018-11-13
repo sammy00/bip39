@@ -16,3 +16,9 @@ Implementation of BIP-0039
 ```bash
 go get -u -v github.com/sammy00/bip39
 ```
+
+## References
+
+- [bip-0039](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki)
+- [python-mnemonic](http://github.com/trezor/python-mnemonic)
+- [Japanese test vector](https://github.com/bip32JP/bip32JP.github.io/blob/master/test_JP_BIP39.json)
