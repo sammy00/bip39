@@ -13,6 +13,9 @@ import (
 // out of the full entropy
 var wordIndexBitMask = new(big.Int).SetInt64(1<<WordIndexBitSize - 1)
 
+// GenerateMnemonic constructs a mnemonic randomly based on the n bytes read
+// out of the provided random sources for the provided language (as the
+// global default if none)
 func GenerateMnemonic(rand io.Reader, n EntropyLen,
 	lang ...dict.Language) (string, error) {
 	if !EntropyLenCompatible(n) {
@@ -27,6 +30,8 @@ func GenerateMnemonic(rand io.Reader, n EntropyLen,
 	return NewMnemonic(entropy, lang...)
 }
 
+// NewMnemonic constructs the mnemonic w.r.t a language (the global default
+// configured by dict pkg if none provided) for the given entropy
 func NewMnemonic(entropy []byte, lang ...dict.Language) (string, error) {
 	n := len(entropy)
 	if !EntropyLenCompatible(n) {
@@ -45,9 +50,6 @@ func NewMnemonic(entropy []byte, lang ...dict.Language) (string, error) {
 
 	x := new(big.Int).SetBytes(entropy)
 	x.Rsh(x, uint(8-checksumLen))
-	//fmt.Printf("checksum=%x\n", checksumB&(1<<uint(checksumLen)-1))
-	//fmt.Printf("checksum=%x\n", checksumB>>uint(8-checksumLen))
-	//fmt.Printf("entropy'=%x\n", x.Bytes())
 
 	// MS=(ENT+CS)/11=(ENT+ENT/32)/11=3*ENT/32
 	// if measured in bytes, we got
@@ -63,11 +65,11 @@ func NewMnemonic(entropy []byte, lang ...dict.Language) (string, error) {
 		words[i] = wordlist[wordIndex.Int64()]
 	}
 
-	//return norm.NFKD.String(strings.Join(words, " ")), nil
-	//return strings.Join(words, " "), nil
 	return strings.Join(words, dict.Whitespace(language)), nil
 }
 
+// ValidateMnemonic checks if the mnemonic is valid against a language
+// (default as the one set by dict pkg)
 func ValidateMnemonic(mnemonic string, lang ...dict.Language) bool {
 	_, err := RecoverFullEntropy(mnemonic, lang...)
 	return nil == err
