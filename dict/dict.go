@@ -4,10 +4,10 @@ import (
 	"github.com/derekparker/trie"
 )
 
+// WordlistGenerator is the signature of function generating a wordlist
 type WordlistGenerator func() []string
 
 var (
-	//wordlists map[Language][]string
 	wordlistGenerators map[Language]WordlistGenerator
 	tries              map[Language]*trie.Trie
 
@@ -15,6 +15,7 @@ var (
 	wordlist []string
 )
 
+// Enable constructs the trie based on the wordlist bound to the given language
 func Enable(lang Language) error {
 	generator, ok := wordlistGenerators[lang]
 	if !ok {
@@ -33,10 +34,13 @@ func Enable(lang Language) error {
 	return nil
 }
 
+// Disable clean up the trie bound to the given language
 func Disable(lang Language) {
 	delete(tries, lang)
 }
 
+// Register takes into record a given language, its wordlist generator and a
+// brief description
 func Register(lang Language, generator WordlistGenerator,
 	description string) error {
 	if _, ok := wordlistGenerators[lang]; ok {
@@ -48,6 +52,10 @@ func Register(lang Language, generator WordlistGenerator,
 	return nil
 }
 
+// TrieToUse gets the trie bound to the given language if any. If no language
+// provided, the global default will be employed. Both the trie and language
+// bound to it (is the global default language if no language is provided)
+// will be returned
 func TrieToUse(lang ...Language) (*trie.Trie, Language, error) {
 	l := language // default as the language in use
 	if len(lang) > 0 {
@@ -61,9 +69,9 @@ func TrieToUse(lang ...Language) (*trie.Trie, Language, error) {
 	return tries[l], l, nil
 }
 
+// UseLanguage overrides the global default language to use.
 func UseLanguage(lang Language) error {
 	if _, ok := wordlistGenerators[lang]; !ok {
-		//return errors.New("non-registered language")
 		return ErrUnknownLanguage
 	}
 
@@ -73,17 +81,14 @@ func UseLanguage(lang Language) error {
 	return nil
 }
 
-func WordlistInUse() ([]string, Language) {
-	return wordlist, language
-}
-
+// WordlistToUse returns the wordlist bound to a language, which is the
+// provided one if any, otherwise the global default language. The 2nd
+// output is the language bound to the wordlist (the 1st output) in case
+// of no error.
 func WordlistToUse(lang ...Language) ([]string, Language, error) {
 	if 0 == len(lang) {
-		wordlist, language := WordlistInUse()
 		return wordlist, language, nil
 	}
-
-	//return WordListInUse(), nil
 
 	generator, ok := wordlistGenerators[lang[0]]
 	if !ok {
@@ -93,6 +98,8 @@ func WordlistToUse(lang ...Language) ([]string, Language, error) {
 	return generator(), lang[0], nil
 }
 
+// init registers and enables the English and Japanese, and
+// set the english as the global default
 func init() {
 	wordlistGenerators = make(map[Language]WordlistGenerator)
 	tries = make(map[Language]*trie.Trie)
