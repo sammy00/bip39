@@ -8,7 +8,7 @@ import (
 )
 
 func TestNewMnemonic_OK_en(t *testing.T) {
-	testCases := bip39.ReadTrezorGoldenJSON(t)
+	testCases := ReadTrezorGoldenJSON(t)
 
 	for i, c := range testCases {
 		got, err := bip39.NewMnemonic(c.Entropy)
@@ -26,8 +26,8 @@ func TestNewMnemonic_OK_en(t *testing.T) {
 func TestNewMnemonic_OK_jp(t *testing.T) {
 	const lang = dict.Japanese
 
-	var testCases []*bip39.GoldieJP
-	bip39.ReadGoldenJSON(t, bip39.GoldenJP, &testCases)
+	var testCases []*GoldieJP
+	ReadGoldenJSON(t, GoldenJP, &testCases)
 
 	for i, c := range testCases {
 		got, err := bip39.NewMnemonic(c.Entropy, lang)
@@ -43,7 +43,7 @@ func TestNewMnemonic_OK_jp(t *testing.T) {
 }
 
 func TestValidateMnemonic_en_OK(t *testing.T) {
-	testCases := bip39.ReadTrezorGoldenJSON(t)
+	testCases := ReadTrezorGoldenJSON(t)
 
 	for i, c := range testCases {
 		if !bip39.ValidateMnemonic(c.Mnemonic) {
@@ -55,8 +55,8 @@ func TestValidateMnemonic_en_OK(t *testing.T) {
 func TestValidateMnemonic_jp_OK(t *testing.T) {
 	const lang = dict.Japanese
 
-	var testCases []*bip39.GoldieJP
-	bip39.ReadGoldenJSON(t, bip39.GoldenJP, &testCases)
+	var testCases []*GoldieJP
+	ReadGoldenJSON(t, GoldenJP, &testCases)
 
 	for i, c := range testCases {
 		if !bip39.ValidateMnemonic(c.Mnemonic, lang) {

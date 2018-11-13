@@ -2,7 +2,6 @@ package bip39_test
 
 import (
 	"bytes"
-	"fmt"
 	"testing"
 
 	"github.com/sammy00/bip39/dict"
@@ -11,7 +10,7 @@ import (
 )
 
 func TestDecodeFullEntropy(t *testing.T) {
-	testCases := bip39.ReadTrezorGoldenJSON(t)
+	testCases := ReadTrezorGoldenJSON(t)
 
 	for i, c := range testCases {
 
@@ -58,12 +57,6 @@ func TestDecodeFullEntropy_Error(t *testing.T) {
 			bip39.ErrChecksum,
 		},
 	}
-
-	wordlist, _ := dict.WordlistInUse()
-	for _, word := range wordlist[:20] {
-		fmt.Printf(`"%s",`, word)
-	}
-	fmt.Println()
 
 	for i, c := range testCases {
 		_, err := bip39.RecoverFullEntropy(c.mnemonic, c.lang)
