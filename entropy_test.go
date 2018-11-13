@@ -2,7 +2,6 @@ package bip39_test
 
 import (
 	"bytes"
-	"fmt"
 	"testing"
 
 	"github.com/sammy00/bip39/dict"
@@ -75,36 +74,38 @@ func TestDecodeFullEntropy_Error(t *testing.T) {
 	}{
 		{ // no error for comparison
 			[]byte{
-				00, 00, 00, 00, 00, 00, 00, 00,
-				00, 00, 00, 00, 00, 00, 00, 00,
-				03,
+				0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+				0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+				0x03,
 			},
 			nil,
 		},
 		{ // invalid entropy length
 			[]byte{
-				00, 00, 00, 00, 00, 00, 00, 00,
-				00, 00, 00, 00, 00, 00, 00, 00,
-				03, 0x04,
+				0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+				0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+				0x03, 0x04,
 			},
 			bip39.ErrEntropyLen,
 		},
-		{ // no error for comparison
+		{ // invalid checksum
 			[]byte{
-				00, 00, 00, 00, 00, 00, 00, 00,
-				00, 00, 00, 00, 00, 00, 00, 00,
-				04,
+				0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+				0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+				0x04,
 			},
 			bip39.ErrChecksum,
 		},
 	}
 
-	const mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about"
-	entropy, _ := bip39.RecoverFullEntropy(mnemonic)
-	for _, v := range entropy {
-		fmt.Printf("%02x,", v)
-	}
-	fmt.Println()
+	/*
+		const mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about"
+		entropy, _ := bip39.RecoverFullEntropy(mnemonic)
+		for _, v := range entropy {
+			fmt.Printf("0x%02x,", v)
+		}
+		fmt.Println()
+	*/
 
 	for i, c := range testCases {
 		_, _, err := bip39.DecodeFullEntropy(c.data)

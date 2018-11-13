@@ -7,7 +7,47 @@ import (
 	"github.com/sammy00/bip39/dict"
 )
 
-func TestNewMnemonic_OK_en(t *testing.T) {
+func TestNewMnemonic_en_Error(t *testing.T) {
+	testCases := []struct {
+		entropy []byte
+		lang    dict.Language
+		expect  error
+	}{
+		{ // no error for comparison
+			[]byte{
+				0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+				0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+			},
+			dict.English,
+			nil,
+		},
+		{ // invalid entropy length
+			[]byte{
+				0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+				0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+				0x01,
+			},
+			dict.English,
+			bip39.ErrEntropyLen,
+		},
+		{ // unsupported language
+			[]byte{
+				0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+				0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+			},
+			dict.Reserved,
+			dict.ErrUnknownLanguage,
+		},
+	}
+
+	for i, c := range testCases {
+		if _, got := bip39.NewMnemonic(c.entropy, c.lang); got != c.expect {
+			t.Fatalf("#%d unexpected error: got %v, expect %v", i, got, c.expect)
+		}
+	}
+}
+
+func TestNewMnemonic_en_OK(t *testing.T) {
 	testCases := ReadTrezorGoldenJSON(t)
 
 	for i, c := range testCases {
