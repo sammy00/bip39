@@ -1,11 +1,73 @@
 package bip39_test
 
 import (
+	"bytes"
+	"io"
 	"testing"
 
 	"github.com/sammy00/bip39"
 	"github.com/sammy00/bip39/dict"
 )
+
+func TestGenerateMnemonic_en_Error(t *testing.T) {
+	testCases := []struct {
+		entropy []byte
+		n       int
+		expect  error
+	}{
+		{ // no error for comparison
+			[]byte{
+				0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+				0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+			},
+			16,
+			nil,
+		},
+		{ // invalid entropy length
+			[]byte{
+				0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+				0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+			},
+			17,
+			bip39.ErrEntropyLen,
+		},
+		{ // not enough entropy
+			[]byte{
+				0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+				0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+			},
+			16,
+			io.ErrUnexpectedEOF,
+		},
+	}
+
+	for i, c := range testCases {
+		rand := bytes.NewBuffer(c.entropy)
+
+		if _, got := bip39.GenerateMnemonic(rand, c.n); got != c.expect {
+			t.Fatalf("#%d unexpected error: got %v, expect %v", i, got, c.expect)
+		}
+	}
+}
+
+func TestGenerateMnemonic_en_OK(t *testing.T) {
+	testCases := ReadTrezorGoldenJSON(t)
+
+	for i, c := range testCases {
+		rand := bytes.NewBuffer(c.Entropy)
+
+		//got, err := bip39.NewMnemonic(c.Entropy)
+		got, err := bip39.GenerateMnemonic(rand, rand.Len())
+
+		if nil != err {
+			t.Fatalf("#%d unexpected error: %v", i, err)
+		}
+
+		if got != c.Mnemonic {
+			t.Fatalf("#%d invalid mnemonic: got %s, expect %s", i, got, c.Mnemonic)
+		}
+	}
+}
 
 func TestNewMnemonic_en_Error(t *testing.T) {
 	testCases := []struct {
