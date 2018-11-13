@@ -97,8 +97,8 @@ func init() {
 	wordlistGenerators = make(map[Language]WordlistGenerator)
 	tries = make(map[Language]*trie.Trie)
 
-	Register(English, english, languageDescriptions[English])
-	Register(Japanese, japanese, languageDescriptions[Japanese])
+	Register(English, english, "English")
+	Register(Japanese, japanese, "Japanese")
 
 	Enable(English)
 	Enable(Japanese)
