@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/sammy00/bip39/dict"
+	"github.com/sammyne/bip39/dict"
 	"golang.org/x/text/unicode/norm"
 )
 

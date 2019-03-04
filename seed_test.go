@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/sammy00/bip39"
+	"github.com/sammyne/bip39"
 )
 
 func TestGenerateSeed_en(t *testing.T) {

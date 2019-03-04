@@ -3,7 +3,7 @@ package dict_test
 import (
 	"testing"
 
-	"github.com/sammy00/bip39/dict"
+	"github.com/sammyne/bip39/dict"
 )
 
 func TestEnable(t *testing.T) {

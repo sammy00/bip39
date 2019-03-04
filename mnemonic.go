@@ -6,7 +6,7 @@ import (
 	"math/big"
 	"strings"
 
-	"github.com/sammy00/bip39/dict"
+	"github.com/sammyne/bip39/dict"
 )
 
 var wordIndexBitMask = new(big.Int).SetInt64(1<<WordIndexBitSize - 1)

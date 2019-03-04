@@ -1,4 +1,4 @@
-module github.com/sammy00/bip39
+module github.com/sammyne/bip39
 
 require (
 	github.com/derekparker/trie v0.0.0-20180212171413-e608c2733dc7

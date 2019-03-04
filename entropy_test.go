@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/sammy00/bip39/dict"
+	"github.com/sammyne/bip39/dict"
 
-	"github.com/sammy00/bip39"
+	"github.com/sammyne/bip39"
 )
 
 func TestDecodeFullEntropy(t *testing.T) {

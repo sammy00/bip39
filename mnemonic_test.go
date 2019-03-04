@@ -5,8 +5,8 @@ import (
 	"io"
 	"testing"
 
-	"github.com/sammy00/bip39"
-	"github.com/sammy00/bip39/dict"
+	"github.com/sammyne/bip39"
+	"github.com/sammyne/bip39/dict"
 )
 
 func TestGenerateMnemonic_en_Error(t *testing.T) {

@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/derekparker/trie"
-	"github.com/sammy00/bip39/dict"
+	"github.com/sammyne/bip39/dict"
 )
 
 func TestLookUp(t *testing.T) {

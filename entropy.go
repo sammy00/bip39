@@ -7,7 +7,7 @@ import (
 
 	"golang.org/x/text/unicode/norm"
 
-	"github.com/sammy00/bip39/dict"
+	"github.com/sammyne/bip39/dict"
 )
 
 func EntropyLenCompatible(n EntropyLen) bool {
