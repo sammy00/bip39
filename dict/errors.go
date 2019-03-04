@@ -2,6 +2,7 @@ package dict
 
 import "github.com/pkg/errors"
 
+// errors enumerations
 var (
 	// ErrDisabledTrie signals trie for a given language has been disabled
 	ErrDisabledTrie = errors.New("trie is disabled")

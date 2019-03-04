@@ -32,7 +32,7 @@ func TestDecodeFullEntropy(t *testing.T) {
 
 func TestRecoverFullEntropy_Error(t *testing.T) {
 	testCases := []struct {
-		mnemonic bip39.Mnemonic
+		mnemonic string
 		lang     dict.Language
 		expect   error // expected error
 	}{

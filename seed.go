@@ -7,13 +7,14 @@ import (
 	"golang.org/x/text/unicode/norm"
 )
 
-func GenerateSeed(mnemonic Mnemonic, passphrase ...string) ([]byte, error) {
+// GenerateSeed converts a mnemonic into a 512-bits seed based on a passphrase
+// which is empty if not provided.
+func GenerateSeed(mnemonic string, passphrase ...string) ([]byte, error) {
 	saltS := "mnemonic"
 	if 0 != len(passphrase) {
 		saltS += passphrase[0]
 	}
 
-	//password, salt := []byte(mnemonic), []byte(saltS)
 	password := norm.NFKD.Bytes([]byte(mnemonic))
 	salt := norm.NFKD.Bytes([]byte(saltS))
 

@@ -6,3 +6,19 @@
 [![LICENSE](https://img.shields.io/badge/license-ISC-blue.svg)](LICENSE)
 
 Implementation of BIP-0039
+
+## Requirement
+
+- go-1.11 with modules support
+
+## Installation
+
+```bash
+go get -u -v github.com/sammyne/bip39
+```
+
+## References
+
+- [bip-0039](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki)
+- [python-mnemonic](http://github.com/trezor/python-mnemonic)
+- [Japanese test vector](https://github.com/bip32JP/bip32JP.github.io/blob/master/test_JP_BIP39.json)
